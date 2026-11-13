@@ -1,0 +1,11 @@
+Temperature | System Status | Warning LED
+1            WARNING         ON          
+1            WARNING         ON          
+1            WARNING         ON          
+1            WARNING         ON          
+1            WARNING         ON          
+11           WARNING         ON          
+1            WARNING         ON          
+1            WARNING         ON          
+1            WARNING         ON          
+1            WARNING         ON          

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <pigpio.h>
+#include <string.h>
 
 #define PIN 17
 
@@ -15,8 +16,9 @@ int main(int argc, char* argv[]){
 	int currentTemp;
 	int classrooms = 1;
 	int warning = 0;
+	FILE* OFH = fopen("tempOutput.txt", "w+");
 	
-	printf("Use default range? (68F - 76F) [Y/N]\n");
+	printf("Use default range? (68 - 76) [Y/N]\n");
 	
 	scanf(" %c", &defaultRange);
 	
@@ -30,18 +32,35 @@ int main(int argc, char* argv[]){
 	
 	printf("Number of classrooms: ");
 	scanf(" %d", &classrooms);
-	int classTemps[classrooms];
+	int classTemps[classrooms][2];
 	for(int i = 0; i < classrooms; i++){
 		printf("Classroom %d temp reading: ", i + 1);
-		scanf(" %d", &classTemps[i]);
+		scanf(" %d", &classTemps[i][0]);
 	}
 	
 	for(int i = 0; i < classrooms; i++){
-		if(classTemps[i] < min || classTemps[i] > max && !warning){
+		if(classTemps[i][0] < min || classTemps[i][0] > max){
 			gpioWrite(PIN, 1);
-			warning = 1;
+			classTemps[i][1] = 1;
+		}
+		else{
+			classTemps[i][1] = 0;
 		}
 	}
-	getchar();
+	
+	fprintf(OFH, "Temperature | System Status | Warning LED\n");
+	for(int i = 0; i < classrooms; i++){
+		fprintf(OFH, "%-13d", classTemps[i][0]);
+		if(classTemps[i][1] == 1){
+			fprintf(OFH, "%-16s%-12s", "WARNING", "ON");
+		}
+		else{
+			fprintf(OFH, "%-16s%-12s", "NORMAL", "OFF");
+		}
+		fprintf(OFH, "\n");
+	}
+	
+	fclose(OFH);
+	
 	return 0;
 }
