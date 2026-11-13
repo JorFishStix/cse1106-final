@@ -18,8 +18,8 @@ int main(int argc, char* argv[]){
 	int warning = 0;
 	FILE* OFH = fopen("tempOutput.txt", "w+");
 	
+	// Range determination
 	printf("Use default range? (68 - 76) [Y/N]\n");
-	
 	scanf(" %c", &defaultRange);
 	
 	if(defaultRange != 'Y'){
@@ -30,6 +30,7 @@ int main(int argc, char* argv[]){
 		scanf(" %d", &max);
 	}
 	
+	// Temperature readings
 	printf("Number of classrooms: ");
 	scanf(" %d", &classrooms);
 	int classTemps[classrooms][2];
@@ -38,6 +39,8 @@ int main(int argc, char* argv[]){
 		scanf(" %d", &classTemps[i][0]);
 	}
 	
+	
+	// LED handling
 	for(int i = 0; i < classrooms; i++){
 		if(classTemps[i][0] < min || classTemps[i][0] > max){
 			gpioWrite(PIN, 1);
@@ -48,6 +51,7 @@ int main(int argc, char* argv[]){
 		}
 	}
 	
+	// Output file handling
 	fprintf(OFH, "Temperature | System Status | Warning LED\n");
 	for(int i = 0; i < classrooms; i++){
 		fprintf(OFH, "%-13d", classTemps[i][0]);
@@ -59,7 +63,6 @@ int main(int argc, char* argv[]){
 		}
 		fprintf(OFH, "\n");
 	}
-	
 	fclose(OFH);
 	
 	return 0;
